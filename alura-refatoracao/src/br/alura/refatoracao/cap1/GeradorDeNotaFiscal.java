@@ -1,10 +1,43 @@
 package br.alura.refatoracao.cap1;
 
+/**
+ * 
+ * @author wevertonreis
+ *
+ */
 public class GeradorDeNotaFiscal {
 
+	/**
+	 * 
+	 * @param fatura
+	 * @return
+	 */
 	public NotaFiscal gera(Fatura fatura) {
 
-		// calcula valor do imposto
+		NotaFiscal notaFiscal = gerarNotaFiscal(fatura);
+
+		// envia email
+		String msgDoEmail = "Caro cliente,<br/>";
+		msgDoEmail += "É com prazer que lhe avisamos que sua nota fiscal foi "
+				+ "gerada no valor de " + notaFiscal.getValorLiquido() + ".<br/>";
+		msgDoEmail += "Acesse o site da prefeitura e faça o download.<br/><br/>";
+		msgDoEmail += "Obrigado!";
+		
+		System.out.println(msgDoEmail);
+		
+		NotaFiscalDao notaFiscalDao = new NotaFiscalDao();
+		notaFiscalDao.salvar(notaFiscal);
+		
+		return notaFiscal;
+	}
+
+	/**
+	 * 
+	 * @param fatura
+	 * @return
+	 */
+	private NotaFiscal gerarNotaFiscal(Fatura fatura) {
+		
 		double valor = fatura.getValorMensal();
 		double imposto = 0;
 		if(valor < 200) {
@@ -17,23 +50,7 @@ public class GeradorDeNotaFiscal {
 			imposto = valor * 0.07;
 		}
 		
-		NotaFiscal nf = new NotaFiscal(valor, imposto);
-
-		// envia email
-		String msgDoEmail = "Caro cliente,<br/>";
-		msgDoEmail += "É com prazer que lhe avisamos que sua nota fiscal foi "
-				+ "gerada no valor de " + nf.getValorLiquido() + ".<br/>";
-		msgDoEmail += "Acesse o site da prefeitura e faça o download.<br/><br/>";
-		msgDoEmail += "Obrigado!";
-		
-		System.out.println(msgDoEmail);
-		
-		// salva no banco
-		String sql = "insert into notafiscal (cliente, valor)"+
-					 "values (?," + nf.getValorLiquido() + ")";
-		
-		System.out.println("Salvando no banco" + sql);
-
-		return nf;
+		NotaFiscal notaFiscal = new NotaFiscal(valor, imposto);
+		return notaFiscal;
 	}
 }
