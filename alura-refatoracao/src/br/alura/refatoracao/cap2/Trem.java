@@ -2,20 +2,37 @@ package br.alura.refatoracao.cap2;
 
 import java.util.List;
 
+/**
+ * 
+ * @author wevertonreis
+ *
+ */
 public class Trem {
 
 	private List<Vagao> vagoes;
 	private int capacidade;
 	
-	public boolean disp(int reservas) {
-		
-		int r = 0;
-		for(Vagao v : vagoes) {
-			r += v.reservados();
+	/**
+	 * 
+	 * @param lugaresAReservar
+	 * @return
+	 */
+	public boolean podeReservar(int lugaresAReservar) {
+		return getQuantidadeLugaresLivres() > lugaresAReservar;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private int getQuantidadeLugaresLivres() {
+		int lugaresReservados = 0;
+		for(Vagao vagao : vagoes) {
+			lugaresReservados += vagao.reservados();
 		}
 		
-		r = capacidade - r;
-		return r > reservas; 
+		int lugaresLivres = capacidade - lugaresReservados;
+		return lugaresLivres;
 	}
 	
 }
